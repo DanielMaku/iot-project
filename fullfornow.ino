@@ -30,15 +30,20 @@ bool lastButtonState = HIGH;
 
 //time
 int hours = 12;
-int minutes = 0;
+int minutes = 17;
 
 // Alarm
-int alarmHour = 6;
-int alarmMinute = 0;
+int alarmHour = 10;
+int alarmMinute = 36;
 bool alarmActive = false;
 
 DHT dht11(DHT11_PIN, DHT11);
 float duration, distance;
+
+void clickSound() 
+{
+  tone(buzz, 2000, 50); // short click
+}
 
 void setup() 
 {
@@ -67,6 +72,7 @@ void loop()
 if (lastButtonState == HIGH && currentButtonState == LOW) {
     mode = (mode + 1) % 3; // 3 modes
     lcd.clear();
+    if (!alarmActive) clickSound();
     delay(200);
   }
 
@@ -74,6 +80,7 @@ lastButtonState = currentButtonState;
  //BUTTON (SW2)
   if (digitalRead(SW2) == LOW) {
     setField = (setField + 1) % 2;
+    if (!alarmActive) clickSound();
     delay(200);
   }
 
@@ -85,6 +92,7 @@ lastButtonState = currentButtonState;
         alarmHour = (alarmHour + 1) % 24;
       else
         alarmMinute = (alarmMinute + 1) % 60;
+      if (!alarmActive) clickSound();
     }
 
     delay(200);
@@ -175,6 +183,7 @@ else
   // SET ALARM
   else if (mode == 2)
   {
+
     lcd.setCursor(0, 0);
     lcd.print("Set Alarm      ");
 
@@ -196,11 +205,13 @@ if (hours == alarmHour && minutes == alarmMinute) {
   alarmActive = true; // start alarm
 }
 
-if (alarmActive) {
+if (alarmActive) 
+{
   tone(buzz, 1000);
   
-  // Check if STOP button is pressed
-  if (digitalRead(stopbuzz) == LOW) {
+  // Check if STOP button is pressed or someone walks past
+  if (digitalRead(stopbuzz) == LOW || distance < 5 ) 
+  {
     alarmActive = false;  // stop the alarm
     noTone(buzz);         // turn off buzzer
   }
