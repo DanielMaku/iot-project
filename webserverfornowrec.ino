@@ -31,6 +31,7 @@ float duration, distance;
 int mode = 0;
 int setField = 0;
 
+bool alarmTriggered = false;
 bool alarmActive = false;
 bool lastButtonState = HIGH;
 int alarmHour = 20;
@@ -107,8 +108,9 @@ void handleSensorData() {
   String temp = getTemp();
   String humidity = getHumidity();
   String distance = getDistance();
+  String timeNow = getTime();
   
-  String data = "{\"temperature\": \"" + temp + "\", \"humidity\": \"" + humidity + "\", \"distance\": \"" + distance + "\"}";
+  String data = "{\"temperature\": \"" + temp + "\", \"humidity\": \"" + humidity + "\", \"distance\": \"" + distance + "\" , \"time\": \"" + timeNow + "\"}";
   
   server.send(200, "application/json", data);  // Send data as JSON
 }
@@ -281,6 +283,8 @@ void loop() {
   }
 
   // Alarm check
+  distance = getDistance().toFloat();
+
  struct tm timeinfo;
   if (getLocalTime(&timeinfo)) {
     int currentHour = timeinfo.tm_hour;
@@ -288,31 +292,25 @@ void loop() {
   
 
 
-  if (currentHour == alarmHour && currentMinute == alarmMinute) {
-    alarmActive = true;  // Start the alarm
-    if (digitalRead(stopbuzz) == LOW || distance < 5) {
-      alarmActive = false;
-      noTone(buzz);
-  }
-  }
-
-
-
-
-  if (alarmActive) {
+ if (currentHour == alarmHour && currentMinute == alarmMinute && !alarmTriggered) {
+    alarmActive = true;
+    alarmTriggered = true;
+    if (alarmActive) {
     tone(buzz, 1000);
+  }
+  }
 
 
 
-    // Stop alarm if stop button pressed or motion detected
-    if (digitalRead(stopbuzz) == LOW || distance < 5) {
-      alarmActive = false;
-      noTone(buzz);
-    }
+  if (alarmActive && (digitalRead(stopbuzz) == LOW || distance < 5)) {
+    alarmActive = false;
+    noTone(buzz);
+  }
+
+  // Reset when minute changes
+  if (currentMinute != alarmMinute) {
+    alarmTriggered = false;
   }
   }
 }
-
- // delay(200);
-  
 

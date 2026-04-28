@@ -23,7 +23,7 @@ String homePagePart1 = F(R"=====( <!DOCTYPE html>
    .flex-Container{
       display: flex;
       flex-direction: column;
-      background-color: DodgerBlue;
+      background-color: Gray;
       align-items: center;
    }
    h1 {
@@ -59,6 +59,7 @@ String homePagePart1 = F(R"=====( <!DOCTYPE html>
             document.getElementById('temp').innerText = data.temperature;
             document.getElementById('humidity').innerText = data.humidity;
             document.getElementById('distance').innerText = data.distance;
+            document.getElementById('time').innerText = data.time;
         })
         .catch(error => console.error('Error fetching sensor data:', error));
     }
@@ -94,6 +95,13 @@ String homePagePart1 = F(R"=====( <!DOCTYPE html>
             <td id="distance"></td>
             <td>cm</td>
         </tr>
+
+        <tr>
+          <td>Time</td>
+         <td id="time"></td>
+        <td>pm</td>
+        </tr>
+
     </table>
     </div>
 </body>
@@ -107,5 +115,4 @@ String homePagePart2 = F(R"=====(
 </body>
 </html>
 )=====");
-
 #endif // HOMEPAGE_H
