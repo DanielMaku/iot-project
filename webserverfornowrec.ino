@@ -34,8 +34,8 @@ int setField = 0;
 bool alarmTriggered = false;
 bool alarmActive = false;
 bool lastButtonState = HIGH;
-int alarmHour = 20;
-int alarmMinute = 01;
+int alarmHour = 11;
+int alarmMinute = 40;
 bool alarmMode = false;
 
 void ultra();
@@ -52,6 +52,7 @@ void clickSound()
 const char *ssid = "dmakuiphone";
 const char *password = "daniel123";
 
+// time
 #define NTP_SERVER "pool.ntp.org"
 #define UTC_OFFSET 3600
 #define UTC_OFFSET_DST 0
@@ -90,7 +91,7 @@ String getDistance() {
   digitalWrite(TRIG_PIN, LOW);
   
   duration = pulseIn(ECHO_PIN, HIGH);
-  distance = (duration * 0.0343) / 2; // Convert to cm
+  distance = (duration * 0.0343) / 2;
   
   return String(distance);
 }
@@ -112,7 +113,7 @@ void handleSensorData() {
   
   String data = "{\"temperature\": \"" + temp + "\", \"humidity\": \"" + humidity + "\", \"distance\": \"" + distance + "\" , \"time\": \"" + timeNow + "\"}";
   
-  server.send(200, "application/json", data);  // Send data as JSON
+  server.send(200, "application/json", data);  // Send data
 }
 
 // time 

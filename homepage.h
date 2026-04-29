@@ -108,11 +108,10 @@ String homePagePart1 = F(R"=====( <!DOCTYPE html>
 </html>
 )=====");
 
-// HTML code for the second part (footer, wrapped in F() for storing in flash memory)
 String homePagePart2 = F(R"=====( 
 <hr>
 &copy Daniel Maku
 </body>
 </html>
 )=====");
-#endif // HOMEPAGE_H
+#endif 
